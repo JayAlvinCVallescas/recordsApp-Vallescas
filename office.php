@@ -23,10 +23,40 @@
         require('config/config.php');
         require('config/db.php');
 
-        $query = 'SELECT * FROM recordsapp.office ORDER BY name ASC';
+        // define Total number of results you want per page
+        $results_per_page = 10;
+
+        // Find the total number of results/rows stored in the database
+        $query = "SELECT * FROM office";
+        $result = mysqli_query($conn, $query);
+        $number_of_result = mysqli_num_rows($result);
+
+        //determine the total number of pages available
+        $number_of_page = ceil($number_of_result / $results_per_page);
+
+        // determine which page number visitor is currently on
+        if(!isset($_GET['page'])){
+            $page = 1;
+        }else{
+            $page = $_GET['page'];
+        }
+
+        //determine the sql LIMIT starting number for the results on the display page
+        $page_first_result = ($page-1) * $results_per_page;
+
+        // Create Query
+        $query = 'SELECT * FROM recordsapp.office ORDER BY name ASC LIMIT '. $page_first_result . ',' . $results_per_page;
+
+        //Get the result
         $result = (mysqli_query($conn,$query));
+
+        // Fetch the data
         $offices = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        // Free result
         mysqli_free_result($result);
+
+        //Close the connection
         mysqli_close($conn);
 
     ?>
@@ -87,12 +117,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="content">
-                <div class="container-fluid">
-                    <div class="section">
-                    </div>
+                    <?php
+                        for($page=1; $page <= $number_of_page; $page++){
+                            echo '<a href = "office.php?page='. $page .'">' . $page . '</a>';
+                        }
+                    ?>
                 </div>
             </div>
             <footer class="footer">

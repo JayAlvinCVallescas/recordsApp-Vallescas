@@ -22,12 +22,43 @@
     <?php
         require('config/config.php');
         require('config/db.php');
+
+        // define Total number of results you want per page
+        $results_per_page = 10;
+
+        // Find the total number of results/rows stored in the database
+        $query = "SELECT * FROM transaction";
+        $result = mysqli_query($conn, $query);
+        $number_of_result = mysqli_num_rows($result);
+
+        //determine the total number of pages available
+        $number_of_page = ceil($number_of_result / $results_per_page);
+
+        // determine which page number visitor is currently on
+        if(!isset($_GET['page'])){
+            $page = 1;
+        }else{
+            $page = $_GET['page'];
+        }
+
+        //determine the sql LIMIT starting number for the results on the display page
+        $page_first_result = ($page-1) * $results_per_page;
+
+        // Create Query
         $query = 'SELECT transaction.datelog, transaction.documentcode, transaction.action, office.name AS office_name, CONCAT(employee.firstname, ",", employee.lastname) AS employee_fullname, transaction.remarks FROM recordsapp.employee, recordsapp.office, recordsapp.transaction 
-        WHERE transaction.employee_id = employee.id AND transaction.office_id = office.id';
-        //$query = 'SELECT employee.lastname, employee.firstname, employee.office_id, employee.address, office.name AS office_name FROM recordsapp.employee INNER JOIN recordsapp.office ON employee.office_id = office.id';
-        $result = (mysqli_query($conn,$query));
+        WHERE transaction.employee_id = employee.id AND transaction.office_id = office.id LIMIT '. $page_first_result . ',' . $results_per_page;
+
+       
+       //Get the result
+       $result = (mysqli_query($conn,$query));
+
+       // Fetch the data
         $transactions = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+        // Free result
         mysqli_free_result($result);
+
+        //Close the connection
         mysqli_close($conn);
     ?>
 
@@ -85,12 +116,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="content">
-                <div class="container-fluid">
-                    <div class="section">
-                    </div>
+                    <?php
+                        for($page=1; $page <= $number_of_page; $page++){
+                            echo '<a href = "transaction.php?page='. $page .'">' . $page . '</a>';
+                        }
+                    ?>
                 </div>
             </div>
             <footer class="footer">
