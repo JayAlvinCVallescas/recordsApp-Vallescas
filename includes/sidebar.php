@@ -11,13 +11,13 @@
                             <p>Transaction</p>
                         </a>
                     </li>
-                    <li>
+                    <li class="nav-item">
                         <a class="nav-link" href="./office.php">
                             <i class="nc-icon nc-bank"></i>
                             <p>Office</p>
                         </a>
                     </li>
-                    <li>
+                    <li class="nav-item">
                         <a class="nav-link" href="./employee.php">
                             <i class="nc-icon nc-circle-09"></i>
                             <p>Employee</p>
