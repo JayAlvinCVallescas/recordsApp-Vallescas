@@ -52,11 +52,11 @@
 
         // Create Query
         if (isset($_GET['search']) and strlen(($search) > 0)){
-            $query = 'SELECT transaction.datelog, transaction.documentcode, transaction.action, office.name AS office_name, CONCAT(employee.firstname, ",", employee.lastname) AS employee_fullname, transaction.remarks FROM recordsapp.employee, recordsapp.office, recordsapp.transaction 
+            $query = 'SELECT transaction.id, transaction.datelog, transaction.documentcode, transaction.action, office.name AS office_name, CONCAT(employee.firstname, ",", employee.lastname) AS employee_fullname, transaction.remarks FROM recordsapp.employee, recordsapp.office, recordsapp.transaction 
             WHERE transaction.employee_id = employee.id AND transaction.office_id = office.id AND transaction.documentcode=' . $search . ' ORDER BY transaction.documentcode, transaction.datelog LIMIT '. $page_first_result . ',' . $results_per_page;
 
         }else{
-            $query = 'SELECT transaction.datelog, transaction.documentcode, transaction.action, office.name AS office_name, CONCAT(employee.firstname, ",", employee.lastname) AS employee_fullname, transaction.remarks FROM recordsapp.employee, recordsapp.office, recordsapp.transaction 
+            $query = 'SELECT transaction.id, transaction.datelog, transaction.documentcode, transaction.action, office.name AS office_name, CONCAT(employee.firstname, ",", employee.lastname) AS employee_fullname, transaction.remarks FROM recordsapp.employee, recordsapp.office, recordsapp.transaction 
             WHERE transaction.employee_id = employee.id AND transaction.office_id = office.id ORDER BY transaction.documentcode, transaction.datelog LIMIT '. $page_first_result . ',' . $results_per_page;
         }
 
@@ -116,6 +116,7 @@
                                             <th>Office</th>
                                             <th>Employee</th>
                                             <th>Remarks</th>
+                                            <th>Action</th>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($transactions as $transaction) : ?>
@@ -125,7 +126,12 @@
                                                 <td><?php echo $transaction['action'] ?></td>         
                                                 <td><?php echo $transaction['office_name'] ?></td>                  
                                                 <td><?php echo $transaction['employee_fullname'] ?></td>                  
-                                                <td><?php echo $transaction['remarks'] ?></td>                  
+                                                <td><?php echo $transaction['remarks'] ?></td>    
+                                                <td>
+                                                    <a href="/transaction-edit.php?id=<?php echo $transaction['id']; ?>">
+                                                        <button type="submit" class="btn btn-warning btn-fill pull-right">Edit</button>
+                                                    </a>
+                                                </td>                
                                             </tr>
                                             <?php endforeach ?>
                                         </tbody>
